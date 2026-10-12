@@ -1,9 +1,9 @@
 import '@fontsource/manrope/latin-700.css'
 import '@fontsource/manrope/latin-ext-700.css'
-import { Fragment } from 'react'
+import { Fragment, type CSSProperties } from 'react'
 import { LOGO_MARK, LOGO_WORDMARK, STICKER_BADGE } from '../../lib/brandAssets'
 import { isPhotoPreset } from '../../lib/photos'
-import { getPanelColor, type Slide } from '../../types'
+import { getCoverStyle, getPanelColor, type Slide } from '../../types'
 import './CarouselSlide.css'
 
 interface CarouselSlideProps {
@@ -173,9 +173,24 @@ export function CarouselSlide({ slide }: CarouselSlideProps) {
     )
   }
 
+  if (slide.layout === 'cover') {
+    const cover = getCoverStyle(slide.coverStyle)
+    const colors = {
+      background: cover.background,
+      color: cover.text,
+      '--cover-bar': cover.bar,
+      '--cover-headline': cover.headline,
+    } as CSSProperties
+    return (
+      <div className="cs cs--cover" style={colors}>
+        <Cover slide={slide} />
+      </div>
+    )
+  }
+
   return (
-    <div className={`cs cs--${slide.layout}`}>
-      {slide.layout === 'cover' ? <Cover slide={slide} /> : <TextSlide slide={slide} />}
+    <div className="cs cs--text">
+      <TextSlide slide={slide} />
     </div>
   )
 }

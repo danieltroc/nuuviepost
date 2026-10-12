@@ -1,5 +1,6 @@
 import {
   CAROUSEL_LAYOUTS,
+  COVER_STYLES,
   PANEL_COLORS,
   type CarouselLayout,
   type Slide,
@@ -79,6 +80,39 @@ export function CarouselEditor({ slide, onChange }: CarouselEditorProps) {
           />
         )}
       </Section>
+
+      {layout === 'cover' && (
+        <Section title="Kolory">
+          <div className="cover-style" role="radiogroup" aria-label="Kolory okładki">
+            {COVER_STYLES.map((style) => (
+              <button
+                key={style.id}
+                type="button"
+                role="radio"
+                aria-checked={style.id === slide.coverStyle}
+                className="cover-style__option"
+                onClick={() => onChange({ coverStyle: style.id })}
+              >
+                {/* Mini cover: two bars with "text" on them, two lines of copy. */}
+                <span className="cover-style__thumb" style={{ background: style.background }}>
+                  <span className="cover-style__bar" style={{ background: style.bar, color: style.headline }}>
+                    Aa
+                  </span>
+                  <span
+                    className="cover-style__bar cover-style__bar--short"
+                    style={{ background: style.bar, color: style.headline }}
+                  >
+                    Aa
+                  </span>
+                  <span className="cover-style__copy" style={{ background: style.text }} />
+                  <span className="cover-style__copy cover-style__copy--short" style={{ background: style.text }} />
+                </span>
+                <span className="cover-style__label">{style.label}</span>
+              </button>
+            ))}
+          </div>
+        </Section>
+      )}
 
       {layout === 'cover' && (
         <Section title="Zdjęcie">

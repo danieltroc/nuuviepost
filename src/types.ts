@@ -46,6 +46,31 @@ export function getPanelColor(id: string): PanelColor {
   return PANEL_COLORS.find((c) => c.id === id) ?? PANEL_COLORS[0]
 }
 
+export type CoverStyleId = 'light' | 'dark' | 'violet'
+
+export interface CoverStyle {
+  id: CoverStyleId
+  label: string
+  background: string
+  // The bars behind the headline and the headline on them.
+  bar: string
+  headline: string
+  // Subtitle and description.
+  text: string
+}
+
+// Colour versions of the cover. "light" is the Figma frame; the other two
+// reuse its palette (violet #8F4BF0, black #070707).
+export const COVER_STYLES: CoverStyle[] = [
+  { id: 'light', label: 'Jasna', background: '#F8F7F3', bar: '#8F4BF0', headline: '#FFFFFF', text: '#070707' },
+  { id: 'dark', label: 'Czarna', background: '#070707', bar: '#8F4BF0', headline: '#FFFFFF', text: '#FFFFFF' },
+  { id: 'violet', label: 'Fioletowa', background: '#8F4BF0', bar: '#FFFFFF', headline: '#070707', text: '#FFFFFF' },
+]
+
+export function getCoverStyle(id: CoverStyleId): CoverStyle {
+  return COVER_STYLES.find((style) => style.id === id) ?? COVER_STYLES[0]
+}
+
 // Animated story background (exported to MP4). One period = one full
 // pass of the blobs along their paths; shorter period = faster motion.
 export type TempoKey = 'calm' | 'medium' | 'lively'
@@ -175,8 +200,9 @@ export interface Slide {
   // cover: line under the headline block; text: the sentence, where
   // *asterisks* mark the word(s) on the violet marker.
   subtitle: string
-  // cover only: small paragraph under the subtitle.
+  // cover only: small paragraph under the subtitle, and the colour version.
   description: string
+  coverStyle: CoverStyleId
   // cover: cut-out photo — a preset from lib/photos or an uploaded
   // transparent PNG (data URL); feature: screenshot.
   image: string | null
@@ -210,6 +236,7 @@ export const SLIDE_DEFAULTS: Omit<Slide, 'id'> = {
   layout: 'feature',
   subtitle: '',
   description: '',
+  coverStyle: 'light',
   image: null,
   imageFlip: false,
   imageX: 50,

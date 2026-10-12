@@ -54,7 +54,7 @@
   font-size: 153px;
   line-height: 183.6px;
   letter-spacing: -7.65px;
-  color: #fff;
+  color: var(--cover-headline, #fff);
 }
 
 .cs-cover__line {
@@ -71,7 +71,8 @@
 
 .cs-cover__bar {
   padding: 0 var(--pad-right) 4px var(--pad-left);
-  background: linear-gradient(#8f4bf0, #8f4bf0) no-repeat 0 31.5px / 100% 178px;
+  background: linear-gradient(var(--cover-bar, #8f4bf0), var(--cover-bar, #8f4bf0)) no-repeat 0 31.5px /
+    100% 178px;
   -webkit-box-decoration-break: clone;
   box-decoration-break: clone;
 }
