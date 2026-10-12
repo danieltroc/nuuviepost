@@ -35,45 +35,45 @@
 
 /* ---------- Cover ---------- */
 
-/* The headline block is tilted −4.13° around its bottom-left corner, so
-   more or fewer lines grow upwards along the same slanted edge. It is as
-   wide as its longest line (max 924px of text).
+/* The headline block is tilted −4.13° around the bottom-left corner of
+   its text, so more or fewer lines grow upwards along the same slanted
+   edge. Text wraps at 924px.
 
-   The block is a stack of 183.6px rows, each holding one 178px violet
-   bar; the bars are two repeating backgrounds. Odd and even rows get
-   different insets, which gives the hand-placed stagger from Figma: every
-   second bar sticks out further on both sides. The text sits 16px above
-   its row, so each bar hangs slightly below its line. */
+   Every line sits on its own violet bar, as wide as that line's text plus
+   a little padding. The bar is a 178px band painted behind the line (the
+   text sits 16px above the band's centre, as in Figma); every second bar
+   reaches a bit further on both sides, which keeps the hand-placed
+   stagger of the design. */
 .cs-cover__headline {
-  --row: 183.6px;
-  --bar: linear-gradient(
-    transparent 2.8px,
-    #8f4bf0 2.8px,
-    #8f4bf0 180.8px,
-    transparent 180.8px
-  );
   position: absolute;
-  left: 59.48px;
-  bottom: 702.96px;
-  width: fit-content;
-  max-width: 1010px;
-  padding: 0 59px 0 27px;
+  left: 85.26px;
+  bottom: 720.86px;
+  width: 924px;
   transform: rotate(-4.13deg);
   transform-origin: 0 100%;
-  background:
-    var(--bar) 13px 0 / calc(100% - 47px) calc(var(--row) * 2) repeat-y,
-    var(--bar) 0 var(--row) / 100% calc(var(--row) * 2) repeat-y;
   font-size: 153px;
-  line-height: var(--row);
+  line-height: 183.6px;
   letter-spacing: -7.65px;
   color: #fff;
-  white-space: pre-line;
 }
 
-.cs-cover__headline-text {
-  display: block;
-  position: relative;
-  top: -16px;
+.cs-cover__line {
+  --pad-left: 14px;
+  --pad-right: 22px;
+  min-height: 183.6px;
+  margin: 0 calc(var(--pad-right) * -1) 0 calc(var(--pad-left) * -1);
+}
+
+.cs-cover__line:nth-child(even) {
+  --pad-left: 27px;
+  --pad-right: 38px;
+}
+
+.cs-cover__bar {
+  padding: 0 var(--pad-right) 4px var(--pad-left);
+  background: linear-gradient(#8f4bf0, #8f4bf0) no-repeat 0 31.5px / 100% 178px;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
 }
 
 /* Above the photo: some photos reach into the text column (a raised

@@ -26,7 +26,12 @@ function Cover({ slide }: CarouselSlideProps) {
   return (
     <>
       <div className="cs-cover__headline">
-        <span className="cs-cover__headline-text">{slide.text}</span>
+        {slide.text.split('\n').map((line, index) => (
+          // One block per typed line; an empty line keeps its row but gets no bar.
+          <div key={index} className="cs-cover__line">
+            {line.trim() && <span className="cs-cover__bar">{line.trim()}</span>}
+          </div>
+        ))}
       </div>
 
       <div className="cs-cover__copy">

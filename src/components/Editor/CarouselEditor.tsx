@@ -44,7 +44,7 @@ export function CarouselEditor({ slide, onChange }: CarouselEditorProps) {
           emoji
           hint={
             layout === 'cover'
-              ? 'Każda linia dostaje własny fioletowy pasek. Enter = nowa linia.'
+              ? 'Każda linia dostaje pasek na szerokość swojego tekstu. Enter = nowa linia.'
               : undefined
           }
         />
