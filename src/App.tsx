@@ -1,9 +1,8 @@
 import { useState } from 'react'
 import { Sidebar } from './components/Layout/Sidebar'
-import { PreviewPane } from './components/Layout/PreviewPane'
+import { Stage } from './components/Layout/Stage'
 import { INITIAL_POST_STATE, type PostState, type Slide } from './types'
 import { addSlide, moveSlide, removeSlide } from './lib/slides'
-import './App.css'
 
 function App() {
   const [post, setPost] = useState<PostState>(INITIAL_POST_STATE)
@@ -44,12 +43,8 @@ function App() {
 
   return (
     <div className="app">
-      <Sidebar
-        post={post}
-        onChangePost={updatePost}
-        onChangeActiveSlide={updateActiveSlide}
-      />
-      <PreviewPane
+      <Sidebar post={post} onChangePost={updatePost} onChangeActiveSlide={updateActiveSlide} />
+      <Stage
         post={post}
         onSelectSlide={(activeSlideIndex) => updatePost({ activeSlideIndex })}
         onAddSlide={handleAddSlide}

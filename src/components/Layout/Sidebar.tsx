@@ -1,12 +1,8 @@
-import { BrandFields } from '../Editor/BrandFields'
-import { LayoutPicker } from '../Editor/LayoutPicker'
-import { TextForm } from '../Editor/TextForm'
-import { ImageUpload } from '../Editor/ImageUpload'
-import { ColorPicker } from '../Editor/ColorPicker'
-import { AnimationControls } from '../Editor/AnimationControls'
-import { StoryStylePicker } from '../Editor/StoryStylePicker'
-import { getSlideRole, getStoryStyle, type PostState, type Slide } from '../../types'
-import './Sidebar.css'
+import { CarouselEditor } from '../Editor/CarouselEditor'
+import { StoryEditor } from '../Editor/StoryEditor'
+import { Segmented } from '../ui/controls'
+import { LOGO_MARK } from '../../lib/brandAssets'
+import { FORMATS, type FormatKey, type PostState, type Slide } from '../../types'
 
 interface SidebarProps {
   post: PostState
@@ -14,100 +10,51 @@ interface SidebarProps {
   onChangeActiveSlide: (patch: Partial<Slide>) => void
 }
 
-const ROLE_LABEL: Record<string, string> = {
-  first: 'pierwszy',
-  inside: 'wewnętrzny',
-  last: 'ostatni',
-}
+const FORMAT_OPTIONS = (Object.keys(FORMATS) as FormatKey[]).map((value) => ({
+  value,
+  label: FORMATS[value].label,
+  sub: FORMATS[value].ratio,
+}))
 
 export function Sidebar({ post, onChangePost, onChangeActiveSlide }: SidebarProps) {
   const activeSlide = post.slides[post.activeSlideIndex]
-  const role = getSlideRole(post.activeSlideIndex, post.slides.length)
-  const isStory = post.format === 'story'
 
   return (
-    <aside className="sidebar">
-      <h1 className="sidebar__title">Generator grafik na Instagram</h1>
+    <aside className="sidebar floating">
+      <header className="sidebar__brand">
+        <svg width={22} height={22} viewBox={`0 0 ${LOGO_MARK.size} ${LOGO_MARK.size}`} aria-hidden="true">
+          <defs>
+            <linearGradient id="brand-gradient" x1="0" x2={LOGO_MARK.size} y1="0" y2="0" gradientUnits="userSpaceOnUse">
+              {LOGO_MARK.gradient.map((stop) => (
+                <stop key={stop.offset} offset={stop.offset} stopColor={stop.color} />
+              ))}
+            </linearGradient>
+          </defs>
+          <path d={LOGO_MARK.path} fill="url(#brand-gradient)" />
+        </svg>
+        <h1 className="sidebar__name">nuuviepost</h1>
+        <span className="sidebar__tag">Instagram</span>
+      </header>
 
-      <BrandFields
-        format={post.format}
-        eyebrow={post.eyebrow}
-        onChange={onChangePost}
-      />
+      <div className="sidebar__format">
+        <Segmented
+          label="Format"
+          value={post.format}
+          options={FORMAT_OPTIONS}
+          onChange={(format) => onChangePost({ format })}
+        />
+      </div>
 
-      <div className="sidebar__slide-editor">
-        <p className="sidebar__slide-label">
-          Slajd {post.activeSlideIndex + 1} z {post.slides.length}
-          <span className={`sidebar__role-tag sidebar__role-tag--${role}`}>
-            {ROLE_LABEL[role]}
-          </span>
-        </p>
-
-        {isStory ? (
-          // Stories: a fixed set of styles, text always centred, the modular
-          // band, an optional cursor and motion.
-          <>
-            <StoryStylePicker
-              value={activeSlide.storyStyle}
-              onChange={(storyStyle) => onChangeActiveSlide({ storyStyle })}
-            />
-
-            <TextForm
-              value={activeSlide.text}
-              onChange={(text) => onChangeActiveSlide({ text })}
-              hint="Source Code Pro Medium 40 px, wersaliki, zawsze na środku. Enter = nowy akapit."
-            />
-
-            <label className="field__check">
-              <input
-                type="checkbox"
-                checked={activeSlide.storyModules}
-                onChange={(event) => onChangeActiveSlide({ storyModules: event.target.checked })}
-              />
-              Moduły (siatka u góry)
-            </label>
-
-            <label className="field__check">
-              <input
-                type="checkbox"
-                checked={activeSlide.storyCursor}
-                onChange={(event) => onChangeActiveSlide({ storyCursor: event.target.checked })}
-              />
-              Migający kursor po tekście
-            </label>
-
-            <AnimationControls
-              enabled={activeSlide.animatedBackground}
-              settings={post.animation}
-              onToggle={(animatedBackground) => onChangeActiveSlide({ animatedBackground })}
-              onChange={(patch) => onChangePost({ animation: { ...post.animation, ...patch } })}
-              showIntensity={getStoryStyle(activeSlide.storyStyle).background.kind === 'gradient'}
-            />
-          </>
+      <div className="sidebar__scroll">
+        {post.format === 'story' ? (
+          <StoryEditor
+            slide={activeSlide}
+            animation={post.animation}
+            onChange={onChangeActiveSlide}
+            onChangeAnimation={(patch) => onChangePost({ animation: { ...post.animation, ...patch } })}
+          />
         ) : (
-          <>
-            <LayoutPicker
-              role={role}
-              value={activeSlide.layoutId}
-              onChange={(layoutId) => onChangeActiveSlide({ layoutId })}
-            />
-
-            <TextForm
-              value={activeSlide.text}
-              onChange={(text) => onChangeActiveSlide({ text })}
-            />
-
-            <ColorPicker
-              value={activeSlide.backgroundColorId}
-              onChange={(backgroundColorId) => onChangeActiveSlide({ backgroundColorId })}
-              disabled={Boolean(activeSlide.backgroundImage)}
-            />
-
-            <ImageUpload
-              value={activeSlide.backgroundImage}
-              onChange={(backgroundImage) => onChangeActiveSlide({ backgroundImage })}
-            />
-          </>
+          <CarouselEditor slide={activeSlide} onChange={onChangeActiveSlide} />
         )}
       </div>
     </aside>

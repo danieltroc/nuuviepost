@@ -5,7 +5,6 @@ import {
   type StoryStyleGroup,
   type StoryStyleId,
 } from '../../types'
-import './StoryStylePicker.css'
 
 interface StoryStylePickerProps {
   value: StoryStyleId
@@ -33,33 +32,28 @@ function StyleThumb({ style }: { style: StoryStyle }) {
 }
 
 export function StoryStylePicker({ value, onChange }: StoryStylePickerProps) {
-  const groups = Object.keys(STORY_STYLE_GROUPS) as StoryStyleGroup[]
-
   return (
-    <div className="field">
-      <span className="field__label">Styl</span>
-      <div className="story-style">
-        {groups.map((group) => (
-          <div key={group} className="story-style__group">
-            <span className="story-style__group-label">{STORY_STYLE_GROUPS[group]}</span>
-            <div className="story-style__options">
-              {STORY_STYLES.filter((style) => style.group === group).map((style) => (
-                <button
-                  key={style.id}
-                  type="button"
-                  className="story-style__option"
-                  aria-pressed={style.id === value}
-                  onClick={() => onChange(style.id)}
-                  title={`${STORY_STYLE_GROUPS[group]} — ${style.label}`}
-                >
-                  <StyleThumb style={style} />
-                  <span className="story-style__label">{style.label}</span>
-                </button>
-              ))}
-            </div>
-          </div>
-        ))}
-      </div>
+    <div className="story-style" role="radiogroup" aria-label="Styl story">
+      {STORY_STYLES.map((style) => {
+        const group = STORY_STYLE_GROUPS[style.group as StoryStyleGroup]
+        return (
+          <button
+            key={style.id}
+            type="button"
+            role="radio"
+            aria-checked={style.id === value}
+            className="story-style__option"
+            onClick={() => onChange(style.id)}
+            title={`${group} — ${style.label}`}
+          >
+            <StyleThumb style={style} />
+            <span className="story-style__text">
+              <span className="story-style__group">{group}</span>
+              <span className="story-style__label">{style.label}</span>
+            </span>
+          </button>
+        )
+      })}
     </div>
   )
 }

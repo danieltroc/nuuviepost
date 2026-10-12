@@ -4,6 +4,7 @@ import {
   type AnimationSettings,
   type TempoKey,
 } from '../../types'
+import { Field, Segmented, Toggle } from '../ui/controls'
 
 interface AnimationControlsProps {
   enabled: boolean
@@ -14,6 +15,16 @@ interface AnimationControlsProps {
   showIntensity: boolean
 }
 
+const TEMPO_OPTIONS = (Object.keys(TEMPOS) as TempoKey[]).map((value) => ({
+  value,
+  label: TEMPOS[value].label,
+}))
+
+const DURATION_OPTIONS = VIDEO_DURATIONS.map((seconds) => ({
+  value: String(seconds),
+  label: `${seconds} s`,
+}))
+
 export function AnimationControls({
   enabled,
   settings,
@@ -22,74 +33,53 @@ export function AnimationControls({
   showIntensity,
 }: AnimationControlsProps) {
   return (
-    <div className="field">
-      <label className="field__check">
-        <input
-          type="checkbox"
-          checked={enabled}
-          onChange={(event) => onToggle(event.target.checked)}
-        />
-        Animacja (eksport MP4)
-      </label>
+    <>
+      <Toggle
+        label="Animacja"
+        hint="Eksport MP4: 1080×1920, 30 fps, H.264"
+        checked={enabled}
+        onChange={onToggle}
+      />
 
       {enabled && (
-        <div className="animation-controls">
-          <div className="field">
-            <label className="field__label" htmlFor="tempo">
-              Tempo
-            </label>
-            <select
-              id="tempo"
+        <>
+          <Field label="Tempo">
+            <Segmented
+              label="Tempo"
               value={settings.tempo}
-              onChange={(event) => onChange({ tempo: event.target.value as TempoKey })}
-            >
-              {Object.entries(TEMPOS).map(([key, { label }]) => (
-                <option key={key} value={key}>
-                  {label}
-                </option>
-              ))}
-            </select>
-          </div>
+              options={TEMPO_OPTIONS}
+              onChange={(tempo) => onChange({ tempo })}
+            />
+          </Field>
+
+          <Field label="Długość wideo">
+            <Segmented
+              label="Długość wideo"
+              value={String(settings.durationSeconds)}
+              options={DURATION_OPTIONS}
+              onChange={(value) => onChange({ durationSeconds: Number(value) })}
+            />
+          </Field>
 
           {showIntensity && (
-            <div className="field">
-              <label className="field__label" htmlFor="intensity">
-                Intensywność gradientu ({settings.intensity.toFixed(1)}×)
-              </label>
+            <Field
+              label={`Intensywność gradientu (${settings.intensity.toFixed(1)}×)`}
+              htmlFor="intensity"
+            >
               <input
                 id="intensity"
                 type="range"
+                className="range"
                 min={0.5}
                 max={3}
                 step={0.1}
                 value={settings.intensity}
                 onChange={(event) => onChange({ intensity: Number(event.target.value) })}
               />
-            </div>
+            </Field>
           )}
-
-          <div className="field">
-            <label className="field__label" htmlFor="duration">
-              Długość wideo
-            </label>
-            <select
-              id="duration"
-              value={settings.durationSeconds}
-              onChange={(event) => onChange({ durationSeconds: Number(event.target.value) })}
-            >
-              {VIDEO_DURATIONS.map((seconds) => (
-                <option key={seconds} value={seconds}>
-                  {seconds} s
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <p className="field__hint">
-            Eksport MP4: 1080×1920, 30 fps, H.264, razem z tekstem.
-          </p>
-        </div>
+        </>
       )}
-    </div>
+    </>
   )
 }

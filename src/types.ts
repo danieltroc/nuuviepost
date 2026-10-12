@@ -1,88 +1,50 @@
+import { PHOTO_PRESETS } from './lib/photos'
+
 export const FORMATS = {
-  story: { label: 'Story (9:16)', width: 1080, height: 1920 },
-  post: { label: 'Post / Karuzela (4:5)', width: 1080, height: 1350 },
-  square: { label: 'Post / Karuzela (1:1)', width: 1080, height: 1080 },
+  post: { label: 'Karuzela / post', ratio: '3:4', width: 1080, height: 1440 },
+  story: { label: 'Story', ratio: '9:16', width: 1080, height: 1920 },
 } as const
 
 export type FormatKey = keyof typeof FORMATS
 
-export interface BrandColor {
+export const MAX_SLIDES = 8
+export const MIN_SLIDES = 1
+
+// Carousel layouts, 1:1 from the Figma section "Figma" (3469:204), all
+// designed for 1080×1440:
+//   cover   — frame "73": headline on tilted violet bars, cut-out photo,
+//             subtitle and description
+//   feature — frames "74"–"84": screenshot on top, coloured panel with a
+//             headline, emoji sticker on the seam
+//   text    — frame "82": big headline, a sentence with a highlighted
+//             word, Nuuvie logo
+export type CarouselLayout = 'cover' | 'feature' | 'text'
+
+export const CAROUSEL_LAYOUTS: Record<CarouselLayout, { label: string; hint: string }> = {
+  cover: { label: 'Okładka', hint: 'Nagłówek na paskach + zdjęcie' },
+  feature: { label: 'Zrzut + panel', hint: 'Obraz, kolorowy panel, naklejka' },
+  text: { label: 'Tekst + logo', hint: 'Nagłówek, zdanie z markerem' },
+}
+
+export interface PanelColor {
   id: string
   label: string
   background: string
-  // Hardcoded pairing — no free font color choice on flat backgrounds,
-  // so contrast is always guaranteed.
   text: string
 }
 
-// Palette sampled from nuuvie.com (off-white/black/white/graphite base
-// with the purple + orange accents used in the logo mark). Swap once
-// the Figma brand palette is confirmed.
-export const BRAND_COLORS: BrandColor[] = [
-  { id: 'off-white', label: 'Off White', background: '#F8F7F3', text: '#0A0A0A' },
-  { id: 'white', label: 'Biel', background: '#FFFFFF', text: '#0A0A0A' },
-  { id: 'graphite', label: 'Grafit', background: '#242424', text: '#F8F7F3' },
-  { id: 'black', label: 'Czerń', background: '#000000', text: '#F8F7F3' },
-  { id: 'purple', label: 'Fiolet', background: '#8F4BF0', text: '#FFFFFF' },
-  { id: 'orange', label: 'Pomarańcz', background: '#F3350C', text: '#FFFFFF' },
+// Panel colours of the feature slides in Figma.
+export const PANEL_COLORS: PanelColor[] = [
+  { id: 'yellow', label: 'Żółty', background: '#F4ED6C', text: '#070707' },
+  { id: 'green', label: 'Zielony', background: '#0DAA58', text: '#070707' },
+  { id: 'blue', label: 'Niebieski', background: '#7FA7F2', text: '#070707' },
+  { id: 'orange', label: 'Pomarańczowy', background: '#FA956B', text: '#070707' },
+  { id: 'black', label: 'Czarny', background: '#131313', text: '#FFFFFF' },
 ]
 
-export function getBrandColor(id: string): BrandColor {
-  return BRAND_COLORS.find((c) => c.id === id) ?? BRAND_COLORS[0]
+export function getPanelColor(id: string): PanelColor {
+  return PANEL_COLORS.find((c) => c.id === id) ?? PANEL_COLORS[0]
 }
-
-// A slide's role is derived from its position in the carousel, not
-// stored — so it stays correct automatically as slides are added,
-// removed, or reordered.
-export type SlideRole = 'first' | 'inside' | 'last'
-
-export function getSlideRole(index: number, total: number): SlideRole {
-  if (index === 0) return 'first'
-  if (index === total - 1) return 'last'
-  return 'inside'
-}
-
-export interface SlideLayout {
-  id: string
-  label: string
-  role: SlideRole
-  textPosition: 'top' | 'center' | 'bottom'
-  textAlign: 'left' | 'center'
-  showCta?: boolean
-  emphasizeLogo?: boolean
-}
-
-// Placeholder layout catalog: structural variants only (text position /
-// alignment, an optional CTA line or an enlarged logo). Swap these for
-// the real Figma-designed layouts once available — the id/role contract
-// here (one catalog per slide role) is what the rest of the app relies
-// on, so new layouts just need to be added to this list.
-export const SLIDE_LAYOUTS: SlideLayout[] = [
-  { id: 'cover-bottom', label: 'Okładka — tekst na dole', role: 'first', textPosition: 'bottom', textAlign: 'left' },
-  { id: 'cover-center', label: 'Okładka — tekst na środku', role: 'first', textPosition: 'center', textAlign: 'center' },
-
-  { id: 'inside-bottom', label: 'Tekst na dole', role: 'inside', textPosition: 'bottom', textAlign: 'left' },
-  { id: 'inside-top', label: 'Tekst na górze', role: 'inside', textPosition: 'top', textAlign: 'left' },
-  { id: 'inside-center', label: 'Tekst na środku', role: 'inside', textPosition: 'center', textAlign: 'center' },
-
-  { id: 'outro-cta', label: 'Zakończenie — CTA', role: 'last', textPosition: 'center', textAlign: 'center', showCta: true },
-  { id: 'outro-summary', label: 'Zakończenie — podsumowanie', role: 'last', textPosition: 'top', textAlign: 'left', emphasizeLogo: true },
-]
-
-export function getLayoutsForRole(role: SlideRole): SlideLayout[] {
-  return SLIDE_LAYOUTS.filter((layout) => layout.role === role)
-}
-
-export function getLayoutById(id: string): SlideLayout {
-  return SLIDE_LAYOUTS.find((layout) => layout.id === id) ?? SLIDE_LAYOUTS[0]
-}
-
-export function defaultLayoutIdForRole(role: SlideRole): string {
-  return getLayoutsForRole(role)[0].id
-}
-
-export const MAX_SLIDES = 8
-export const MIN_SLIDES = 1
 
 // Animated story background (exported to MP4). One period = one full
 // pass of the blobs along their paths; shorter period = faster motion.
@@ -205,14 +167,30 @@ export function getStoryStyle(id: StoryStyleId): StoryStyle {
 
 export interface Slide {
   id: string
-  layoutId: string
+  // Main text: the headline of a carousel slide / the text of a story.
   text: string
-  backgroundImage: string | null
-  backgroundColorId: string
-  // Story format only: motion on (gradient, module band and cursor move;
-  // MP4 export) or off (still frame).
+
+  // --- Carousel (3:4) ---
+  layout: CarouselLayout
+  // cover: line under the headline block; text: the sentence, where
+  // *asterisks* mark the word(s) on the violet marker.
+  subtitle: string
+  // cover only: small paragraph under the subtitle.
+  description: string
+  // cover: cut-out photo — a preset from lib/photos or an uploaded
+  // transparent PNG (data URL); feature: screenshot.
+  image: string | null
+  imageFlip: boolean
+  // feature: horizontal crop position of the screenshot, 0–100 (%).
+  imageX: number
+  // feature: panel colour and the emoji on the sticker ('' = no sticker).
+  panelColorId: string
+  emoji: string
+
+  // --- Story (9:16) ---
+  // Motion on (gradient, module band and cursor move; MP4 export) or off
+  // (still frame).
   animatedBackground: boolean
-  // Story format only.
   storyStyle: StoryStyleId
   // The modular band at the top (Figma "Instagram story - 2").
   storyModules: boolean
@@ -222,28 +200,38 @@ export interface Slide {
 
 export interface PostState {
   format: FormatKey
-  // Brand block (logo placeholder + eyebrow) is shared across every
-  // slide of the carousel — everything else lives per-slide below.
-  eyebrow: string
   slides: Slide[]
   activeSlideIndex: number
   animation: AnimationSettings
 }
 
+export const SLIDE_DEFAULTS: Omit<Slide, 'id'> = {
+  text: '',
+  layout: 'feature',
+  subtitle: '',
+  description: '',
+  image: null,
+  imageFlip: false,
+  imageX: 50,
+  panelColorId: 'yellow',
+  emoji: '👌',
+  animatedBackground: true,
+  storyStyle: 'violet',
+  storyModules: true,
+  storyCursor: false,
+}
+
 export const INITIAL_POST_STATE: PostState = {
   format: 'post',
-  eyebrow: 'NUUVIE',
   slides: [
     {
+      ...SLIDE_DEFAULTS,
       id: 'slide-1',
-      layoutId: defaultLayoutIdForRole('first'),
-      text: 'Wpisz treść posta tutaj',
-      backgroundImage: null,
-      backgroundColorId: 'graphite',
-      animatedBackground: true,
-      storyStyle: 'violet',
-      storyModules: true,
-      storyCursor: false,
+      layout: 'cover',
+      text: 'Tytuł, który\nzatrzyma\nkciuk',
+      subtitle: 'Temat karuzeli.\nW dwóch liniach.',
+      description: 'Krótki opis tego, co czeka na kolejnych slajdach',
+      image: PHOTO_PRESETS[0].url,
     },
   ],
   activeSlideIndex: 0,

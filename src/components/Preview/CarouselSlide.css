@@ -1,0 +1,229 @@
+/* Carousel slides at native 1080×1440. All positions, sizes and colours
+   come from the Figma frames (cover "73", feature "74", text "82"). */
+
+.cs {
+  position: relative;
+  width: 1080px;
+  height: 1440px;
+  overflow: hidden;
+  background: #f8f7f3;
+  color: #070707;
+  font-family: 'Manrope', 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif;
+  font-weight: 700;
+  font-synthesis: none;
+  /* Thumbnails live inside buttons — don't inherit their text styles. */
+  text-align: left;
+  white-space: normal;
+}
+
+.cs p {
+  margin: 0;
+}
+
+/* Editor-only placeholder for a missing image (never exported). */
+.cs-hint {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 3px dashed currentColor;
+  font-size: 30px;
+  letter-spacing: -0.6px;
+  opacity: 0.35;
+}
+
+/* ---------- Cover ---------- */
+
+/* The headline block is tilted −4.13° around its bottom-left corner, so
+   more or fewer lines grow upwards along the same slanted edge. It is as
+   wide as its longest line (max 924px of text).
+
+   The block is a stack of 183.6px rows, each holding one 178px violet
+   bar; the bars are two repeating backgrounds. Odd and even rows get
+   different insets, which gives the hand-placed stagger from Figma: every
+   second bar sticks out further on both sides. The text sits 16px above
+   its row, so each bar hangs slightly below its line. */
+.cs-cover__headline {
+  --row: 183.6px;
+  --bar: linear-gradient(
+    transparent 2.8px,
+    #8f4bf0 2.8px,
+    #8f4bf0 180.8px,
+    transparent 180.8px
+  );
+  position: absolute;
+  left: 59.48px;
+  bottom: 702.96px;
+  width: fit-content;
+  max-width: 1010px;
+  padding: 0 59px 0 27px;
+  transform: rotate(-4.13deg);
+  transform-origin: 0 100%;
+  background:
+    var(--bar) 13px 0 / calc(100% - 47px) calc(var(--row) * 2) repeat-y,
+    var(--bar) 0 var(--row) / 100% calc(var(--row) * 2) repeat-y;
+  font-size: 153px;
+  line-height: var(--row);
+  letter-spacing: -7.65px;
+  color: #fff;
+  white-space: pre-line;
+}
+
+.cs-cover__headline-text {
+  display: block;
+  position: relative;
+  top: -16px;
+}
+
+/* Above the photo: some photos reach into the text column (a raised
+   hand), and the copy has to stay readable. */
+.cs-cover__copy {
+  position: absolute;
+  z-index: 1;
+  left: 551px;
+  top: 823px;
+  width: 480px;
+}
+
+.cs-cover__subtitle {
+  font-size: 64px;
+  line-height: 1.2;
+  letter-spacing: -3.2px;
+  white-space: pre-line;
+}
+
+.cs-cover__description {
+  width: 387px;
+  margin-top: 28.4px !important;
+  font-size: 32px;
+  line-height: 1.2;
+  letter-spacing: -1.28px;
+  white-space: pre-line;
+}
+
+/* The photo slot from Figma (frames "Daniel 1"–"6"): 661×819, starting
+   23px off the left edge and running 8px past the bottom. */
+.cs-cover__photo {
+  position: absolute;
+  left: -23px;
+  top: 629px;
+  width: 661px;
+  height: 819px;
+}
+
+/* Presets fill the slot exactly; an uploaded photo is fitted without
+   distortion and stands on the bottom edge. */
+.cs-cover__photo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: 50% 100%;
+}
+
+.cs-cover__photo .cs-hint {
+  inset: 60px 100px 8px 83px;
+}
+
+/* ---------- Feature ---------- */
+
+.cs-feature__image {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1080px;
+  height: 909px;
+  overflow: hidden;
+}
+
+.cs-feature__image img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cs-feature__headline {
+  position: absolute;
+  left: 80px;
+  top: 981px;
+  width: 920px;
+  font-size: 80px;
+  line-height: 1.2;
+  letter-spacing: -4px;
+  white-space: pre-line;
+}
+
+/* 277px box centred on (902.6, 868.6), tilted −20.07°. */
+.cs-sticker {
+  position: absolute;
+  left: 764.12px;
+  top: 730.12px;
+  width: 277px;
+  height: 277px;
+  transform: rotate(-20.07deg);
+}
+
+.cs-sticker__badge {
+  position: absolute;
+  left: 33.18px;
+  top: 31.88px;
+}
+
+.cs-sticker__emoji {
+  position: absolute;
+  inset: -1px -1px 1px 1px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 110px;
+  line-height: 1.2;
+  color: #070707;
+}
+
+/* ---------- Text + logo ---------- */
+
+/* Bottom of the headline is pinned at y=716; it grows upwards. */
+.cs-text__headline {
+  position: absolute;
+  left: 78px;
+  bottom: 724px;
+  width: 910px;
+  font-size: 103px;
+  line-height: 1.1;
+  letter-spacing: -5.15px;
+  white-space: pre-line;
+}
+
+.cs-text__sentence {
+  position: absolute;
+  left: 79px;
+  top: 747.5px;
+  width: 922px;
+  font-size: 40px;
+  line-height: 1.6;
+  letter-spacing: -1.2px;
+  white-space: pre-line;
+}
+
+.cs-text__mark {
+  margin-left: 5px;
+  padding: 0 5px;
+  background: linear-gradient(#8f4bf0, #8f4bf0) no-repeat 0 3.84px / 100% 50px;
+  color: #fff;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
+.cs-text__logo-mark {
+  position: absolute;
+  left: 78px;
+  top: 1079.85px;
+}
+
+.cs-text__logo-word {
+  position: absolute;
+  left: 145.91px;
+  top: 1083.81px;
+}
