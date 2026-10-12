@@ -1,0 +1,89 @@
+.preview-pane {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-width: 0;
+}
+
+.preview-pane__stage {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+}
+
+.preview-pane__scaler {
+  position: relative;
+  flex-shrink: 0;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.preview-pane__hint {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  text-align: center;
+  color: rgba(128, 128, 128, 0.7);
+  font-size: 13px;
+  pointer-events: none;
+}
+
+.preview-pane__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 32px;
+  border-top: 1px solid #e5e5e8;
+}
+
+.preview-pane__dimensions {
+  color: #6b6b70;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+
+.preview-pane__download {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  background: #1a1a1e;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.preview-pane__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.preview-pane__download--secondary {
+  background: #fff;
+  color: #1a1a1e;
+  border: 1px solid #d7d7db;
+}
+
+.preview-pane__download--secondary:hover:not(:disabled) {
+  background: #f0f0f2;
+}
+
+.preview-pane__download:hover:not(:disabled) {
+  background: #333338;
+}
+
+.preview-pane__download:disabled {
+  opacity: 0.6;
+  cursor: default;
+}

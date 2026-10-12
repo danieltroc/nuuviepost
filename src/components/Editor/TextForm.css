@@ -1,0 +1,44 @@
+.text-form__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.text-form__emoji-toggle {
+  padding: 3px 8px;
+  border: 1px solid #d7d7db;
+  border-radius: 6px;
+  background: #fff;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.text-form__emoji-toggle:hover,
+.text-form__emoji-toggle[aria-expanded='true'] {
+  background: #f0f0f2;
+}
+
+.text-form__emoji-grid {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 2px;
+  padding: 6px;
+  border: 1px solid #e5e5e8;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.text-form__emoji {
+  padding: 4px 0;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  font-family: 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif;
+  font-size: 20px;
+  line-height: 1.2;
+  cursor: pointer;
+}
+
+.text-form__emoji:hover {
+  background: #f0f0f2;
+}
