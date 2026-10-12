@@ -5,7 +5,7 @@ import { Icon } from '../ui/controls'
 import { exportNodeToPng, exportNodesToPng } from '../../lib/exportPng'
 import { exportStoryVideo, VIDEO_FPS } from '../../lib/exportStoryVideo'
 import { getStoryContent } from '../../lib/storyRenderer'
-import { downloadBlob } from '../../lib/download'
+import { downloadBlob, nextExportNumber } from '../../lib/download'
 import { FORMATS, getActiveAnimation, type PostState } from '../../types'
 
 interface StageProps {
@@ -33,8 +33,12 @@ export function Stage({ post, onSelectSlide, onAddSlide, onRemoveSlide, onMoveSl
   const count = post.slides.length
   const activeSlide = post.slides[post.activeSlideIndex]
   const animation = getActiveAnimation(post.format, activeSlide, post.animation)
+  // nuuvie-story-012.mp4, nuuvie-karuzela-013-02.png: a running export
+  // number, plus the slide number when there are several slides.
   const baseName = isStory ? 'nuuvie-story' : 'nuuvie-karuzela'
   const slideSuffix = count > 1 ? `-${pad(post.activeSlideIndex + 1)}` : ''
+  const fileName = (extension: string) =>
+    `${baseName}-${nextExportNumber()}${slideSuffix}.${extension}`
 
   useEffect(() => {
     const viewport = viewportRef.current
@@ -71,7 +75,7 @@ export function Stage({ post, onSelectSlide, onAddSlide, onRemoveSlide, onMoveSl
     run(
       { kind: 'png' },
       async () => {
-        if (canvasRef.current) await exportNodeToPng(canvasRef.current, `${baseName}${slideSuffix}.png`)
+        if (canvasRef.current) await exportNodeToPng(canvasRef.current, fileName('png'))
       },
       'Nie udało się wyeksportować obrazu.',
     )
@@ -79,14 +83,17 @@ export function Stage({ post, onSelectSlide, onAddSlide, onRemoveSlide, onMoveSl
   const downloadAll = () =>
     run(
       { kind: 'all', done: 0 },
-      () =>
-        exportNodesToPng(
+      () => {
+        // One export number for the whole set, so the slides sort together.
+        const batch = nextExportNumber()
+        return exportNodesToPng(
           post.slides.flatMap((slide, index) => {
             const node = slideNodes.current.get(slide.id)
-            return node ? [{ node, filename: `${baseName}-${pad(index + 1)}.png` }] : []
+            return node ? [{ node, filename: `${baseName}-${batch}-${pad(index + 1)}.png` }] : []
           }),
           (done) => setBusy({ kind: 'all', done }),
-        ),
+        )
+      },
       'Nie udało się wyeksportować slajdów.',
     )
 
@@ -102,7 +109,7 @@ export function Stage({ post, onSelectSlide, onAddSlide, onRemoveSlide, onMoveSl
           settings: animation,
           onProgress: (progress) => setBusy({ kind: 'video', progress }),
         })
-        downloadBlob(blob, `${baseName}${slideSuffix}.mp4`)
+        downloadBlob(blob, fileName('mp4'))
       },
       'Nie udało się wyeksportować wideo.',
     )

@@ -33,7 +33,9 @@ export function Sidebar({ post, onChangePost, onChangeActiveSlide }: SidebarProp
           <path d={LOGO_MARK.path} fill="url(#brand-gradient)" />
         </svg>
         <h1 className="sidebar__name">nuuviepost</h1>
-        <span className="sidebar__tag">Instagram</span>
+        <span className="sidebar__tag" title={`Wersja ${__BUILD_ID__}, zbudowana ${__BUILD_DATE__} UTC`}>
+          v. {__BUILD_ID__}
+        </span>
       </header>
 
       <div className="sidebar__format">
